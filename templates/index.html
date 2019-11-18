@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Handwritten Digit Recognition using Convolutional Neural Networks</title>     
+
+</head>
+<style type="text/css">
+	#wrap{
+		width: 1200px;
+		margin: 0 auto;
+	}
+
+	#right{
+		float: right;
+		width: 600px;
+	}
+
+	#left{
+		float: left;
+		width: 600px;
+	}
+
+	.myButtonFile {
+	-moz-box-shadow: 0px 10px 14px -7px #3e7327;
+	-webkit-box-shadow: 0px 10px 14px -7px #3e7327;
+	box-shadow: 0px 10px 14px -7px #3e7327;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #4DAF7C), color-stop(1, #72b352));
+	background:-moz-linear-gradient(top, #4DAF7C 5%, #72b352 100%);
+	background:-webkit-linear-gradient(top, #4DAF7C 5%, #72b352 100%);
+	background:-o-linear-gradient(top, #4DAF7C 5%, #72b352 100%);
+	background:-ms-linear-gradient(top, #4DAF7C 5%, #72b352 100%);
+	background:linear-gradient(to bottom, #4DAF7C 5%, #72b352 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#4DAF7C', endColorstr='#72b352',GradientType=0);
+	background-color:#4DAF7C;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+	border:1px solid #4b8f29;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	padding:6px 13px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #5b8a3c;
+}
+.myButtonFile:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #72b352), color-stop(1, #4DAF7C));
+	background:-moz-linear-gradient(top, #72b352 5%, #4DAF7C 100%);
+	background:-webkit-linear-gradient(top, #72b352 5%, #4DAF7C 100%);
+	background:-o-linear-gradient(top, #72b352 5%, #4DAF7C 100%);
+	background:-ms-linear-gradient(top, #72b352 5%, #4DAF7C 100%);
+	background:linear-gradient(to bottom, #72b352 5%, #4DAF7C 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#72b352', endColorstr='#4DAF7C',GradientType=0);
+	background-color:#4DAF7C;
+}
+.myButtonFile:active {
+	position:relative;
+	top:1px;
+}
+
+
+	.myButton {
+	-moz-box-shadow: 0px 10px 14px -7px #3e7327;
+	-webkit-box-shadow: 0px 10px 14px -7px #3e7327;
+	box-shadow: 0px 10px 14px -7px #3e7327;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #4DAF7C), color-stop(1, #72b352));
+	background:-moz-linear-gradient(top, #4DAF7C 5%, #72b352 100%);
+	background:-webkit-linear-gradient(top, #4DAF7C 5%, #72b352 100%);
+	background:-o-linear-gradient(top, #4DAF7C 5%, #72b352 100%);
+	background:-ms-linear-gradient(top, #4DAF7C 5%, #72b352 100%);
+	background:linear-gradient(to bottom, #4DAF7C 5%, #72b352 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#4DAF7C', endColorstr='#72b352',GradientType=0);
+	background-color:#4DAF7C;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+	border:1px solid #4b8f29;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	padding:6px 13px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #5b8a3c;
+}
+.myButton:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #72b352), color-stop(1, #4DAF7C));
+	background:-moz-linear-gradient(top, #72b352 5%, #4DAF7C 100%);
+	background:-webkit-linear-gradient(top, #72b352 5%, #4DAF7C 100%);
+	background:-o-linear-gradient(top, #72b352 5%, #4DAF7C 100%);
+	background:-ms-linear-gradient(top, #72b352 5%, #4DAF7C 100%);
+	background:linear-gradient(to bottom, #72b352 5%, #4DAF7C 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#72b352', endColorstr='#4DAF7C',GradientType=0);
+	background-color:#4DAF7C;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
+
+</style>
+<body>
+<div id="wrap">
+	<div id="content">
+	<h1>Handwritten Digit Recognition using <span>Convolutional Neural Networks</span></h1>
+		<div id="left">
+						<input type="file" id="inputFileToLoad" onchange="encodeImageFileAsURL();" style="margin-bottom: 20px">
+						<div id="imgTest"></div>
+						<textarea id="code"></textarea>
+						<div style="margin-top: 20px;">
+							<a href="#" class="myButtonFile" style="text-decoration: none; background-color: blue; margin: 10px 10px; color: white"> Predict File Upload </a>
+						</div>
+						Ket qua:
+						<div id="resultFile" style=""></div>
+		</div>
+
+		<div id="right">
+
+						<span">Draw the Digit inside this Box!</span><br>
+						<canvas id="canvas" width="250" height="250" style="border:8px solid;  border-radius: 5px; cursor: crosshair;"></canvas>
+						<div id="debug" style="margin:50px; margin-top:20px;">
+							<input type="button" id="clearButton" value="Clear">
+							<a href="#" class="myButton">Predict</a>	
+						</div>	
+
+						ket qua:
+						<div id="result" style=""></div>
+		</div>
+	</div>
+</div>
+
+
+<!-- <div class="container">
+<h1>Handwritten Digit Recognition using <span>Convolutional Neural Networks</span></h1>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="row">
+				<div class="col-md-6">
+					<input type="file" id="inputFileToLoad" onchange="encodeImageFileAsURL();" style="margin-bottom: 20px">
+					<div id="imgTest"></div>
+					<textarea id="code"></textarea>
+					<div style="margin-top: 20px;">
+						<a href="#" class="myButtonFile btn btn-primary"> Predict File Upload </a>
+					</div>
+				</div>
+				<div>
+					Ket qua:
+					<div id="resultFile" style=""></div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="row">
+				<div class="col-md-6">
+					<span">Draw the Digit inside this Box!</span><br>
+					<canvas id="canvas" width="250" height="280" style="border:8px solid;  border-radius: 5px; cursor: crosshair;"></canvas>
+					<div id="debug" style="margin:50px; margin-top:20px;">
+						<input type="button" id="clearButton" value="Clear" class="btn btn-info">
+						<a href="#" class="myButton btn btn-danger">Predict</a>	
+					</div>
+				</div>
+				<div>
+					ket qua:
+					<div id="result" style=""></div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div> -->
+
+	
+  		<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+	    <script src="{{ url_for('static',filename='index.js') }}"></script>
+
+
+	    <script type="text/javascript">
+	   
+
+	   $(".myButtonFile").click(function(){
+	   			var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+	   			//nhan dang tu hinh upload len
+	   			var base64 = document.getElementById("code").value;
+	   			var img = base64;
+	   			
+	   			//end nhan dang tu hinh upload
+	   			//alert("s1: "+img);
+	   			$.ajax({
+	   				type: "POST",
+	   				url: $SCRIPT_ROOT + "/predict/",
+	   				data: img,
+	   				success: function(data){
+	   					var ht ="";
+
+					    var str1 = "[1]";var str2 = "[2]";var str3 = "[3]";var str4 = "[4]";var str5 = "[5]";
+					    var str6 = "[6]";var str7 = "[7]";var str8 = "[8]";var str9 = "[9]";var str0 = "[0]";
+	   					$('#resultFile').text(' Predicted Output: '+data);
+	   					
+	   					if(str1==data) {document.getElementById("resultFile").innerHTML = "<img src=\"{{ url_for('static',filename='s01.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str2==data) {document.getElementById("resultFile").innerHTML = "<img src=\"{{ url_for('static',filename='s02.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str3==data) {document.getElementById("resultFile").innerHTML = "<img src=\"{{ url_for('static',filename='s03.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str4==data) {document.getElementById("resultFile").innerHTML = "<img src=\"{{ url_for('static',filename='s04.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str5==data) {document.getElementById("resultFile").innerHTML = "<img src=\"{{ url_for('static',filename='s05.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str6==data) {document.getElementById("resultFile").innerHTML = "<img src=\"{{ url_for('static',filename='s06.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str7==data) {document.getElementById("resultFile").innerHTML = "<img src=\"{{ url_for('static',filename='s07.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str8==data) {document.getElementById("resultFile").innerHTML = "<img src=\"{{ url_for('static',filename='s08.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str9==data) {document.getElementById("resultFile").innerHTML = "<img src=\"{{ url_for('static',filename='s09.png') }}\" width=\"280\" height=\"280\">";}	
+	   					else if(str0==data) {document.getElementById("resultFile").innerHTML = "<img src=\"{{ url_for('static',filename='s00.png') }}\" width=\"280\" height=\"280\">";}	   					   						   						   						   						   						   						   					
+
+	   						   						   						   						   						   						   						   						   					
+	   				}
+	   			});
+	   		});
+
+
+
+	   		$(".myButton").click(function(){
+	   			var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+	   			
+	   			//nhan dung tu hinh ve
+	   			
+	   			var canvasObj = document.getElementById("canvas");
+	   			var img = canvasObj.toDataURL();
+	   			
+	   			//end nhan dang tu hinh ve
+	   			//alert("s1: "+img);
+	   			$.ajax({
+	   				type: "POST",
+	   				url: $SCRIPT_ROOT + "/predict/",
+	   				data: img,
+	   				success: function(data){
+	   					var ht ="";
+
+					    var str1 = "[1]";var str2 = "[2]";var str3 = "[3]";var str4 = "[4]";var str5 = "[5]";
+					    var str6 = "[6]";var str7 = "[7]";var str8 = "[8]";var str9 = "[9]";var str0 = "[0]";
+	   					$('#result1').text(' Predicted Output: '+data);
+	   					
+	   					if(str1==data) {document.getElementById("result").innerHTML = "<img src=\"{{ url_for('static',filename='s01.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str2==data) {document.getElementById("result").innerHTML = "<img src=\"{{ url_for('static',filename='s02.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str3==data) {document.getElementById("result").innerHTML = "<img src=\"{{ url_for('static',filename='s03.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str4==data) {document.getElementById("result").innerHTML = "<img src=\"{{ url_for('static',filename='s04.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str5==data) {document.getElementById("result").innerHTML = "<img src=\"{{ url_for('static',filename='s05.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str6==data) {document.getElementById("result").innerHTML = "<img src=\"{{ url_for('static',filename='s06.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str7==data) {document.getElementById("result").innerHTML = "<img src=\"{{ url_for('static',filename='s07.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str8==data) {document.getElementById("result").innerHTML = "<img src=\"{{ url_for('static',filename='s08.png') }}\" width=\"280\" height=\"280\">";}
+	   					else if(str9==data) {document.getElementById("result").innerHTML = "<img src=\"{{ url_for('static',filename='s09.png') }}\" width=\"280\" height=\"280\">";}	
+	   					else if(str0==data) {document.getElementById("result").innerHTML = "<img src=\"{{ url_for('static',filename='s00.png') }}\" width=\"280\" height=\"280\">";}	   					   						   						   						   						   						   						   					
+
+	   						   						   						   						   						   						   						   						   					
+	   				}
+	   			});
+	   		});
+
+	  function encodeImageFileAsURL() {
+
+		    var filesSelected = document.getElementById("inputFileToLoad").files;
+		    if (filesSelected.length > 0) {
+		      var fileToLoad = filesSelected[0];
+
+		      var fileReader = new FileReader();
+
+		      fileReader.onload = function(fileLoadedEvent) {
+		        var srcData = fileLoadedEvent.target.result; // <--- data: base64
+
+		        var newImage = document.createElement('img');
+		        newImage.src = srcData;
+				newImage.setAttribute("id", "t");
+				newImage.setAttribute("width", "250");
+				newImage.setAttribute("height", "250");
+
+		        document.getElementById("imgTest").innerHTML = newImage.outerHTML;
+		        var x = document.getElementById("t").getAttribute("src");
+					document.getElementById("code").innerHTML = x;
+		        
+		        //alert("Converted Base64 version is " + document.getElementById("imgTest").innerHTML);
+		      }
+		      fileReader.readAsDataURL(fileToLoad);
+		    }
+		  }
+
+
+	   
+	   </script>
+</body>
+</html>
